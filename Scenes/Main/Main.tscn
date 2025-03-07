@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://cp1lq04roerhl"]
+
+[ext_resource type="Script" uid="uid://cc4xo32a8y2s3" path="res://Scripts/Main/Main.cs" id="1_p8rbg"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_p8rbg"]
+size = Vector2(64, 64)
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_p8rbg")
+
+[node name="Cursor" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+texture = SubResource("PlaceholderTexture2D_p8rbg")
+centered = false
+
+[node name="PlaceBuildingButton" type="Button" parent="."]
+offset_left = 1.0
+offset_top = 615.0
+offset_right = 118.0
+offset_bottom = 646.0
+size_flags_horizontal = 8
+size_flags_vertical = 8
+text = "Place Building"

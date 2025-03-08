@@ -13,7 +13,12 @@ config_version=5
 config/name="Goblin Mines"
 run/main_scene="uid://cp1lq04roerhl"
 config/features=PackedStringArray("4.4", "C#", "Forward Plus")
-config/icon="res://icon.svg"
+boot_splash/image="uid://eqtpsrx7wph6"
+config/icon="uid://eqtpsrx7wph6"
+
+[autoload]
+
+Globals="*res://Globals/Scripts/Globals.cs"
 
 [display]
 
@@ -37,3 +42,7 @@ left_click={
 "events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":0,"position":Vector2(116, 20),"global_position":Vector2(128, 80),"factor":1.0,"button_index":1,"canceled":false,"pressed":true,"double_click":false,"script":null)
 ]
 }
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0

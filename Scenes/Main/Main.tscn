@@ -1,15 +1,26 @@
-[gd_scene load_steps=4 format=3 uid="uid://cp1lq04roerhl"]
+[gd_scene load_steps=6 format=4 uid="uid://cp1lq04roerhl"]
 
 [ext_resource type="Script" uid="uid://cc4xo32a8y2s3" path="res://Scripts/Main/Main.cs" id="1_p8rbg"]
+[ext_resource type="TileSet" uid="uid://bm4ftgkf42ksi" path="res://Resources/Files/tiles.tres" id="2_cmk6n"]
+[ext_resource type="PackedScene" uid="uid://q5cgro8ysgj2" path="res://Scenes/Manager/GridManager.tscn" id="2_i3fi7"]
 [ext_resource type="TileSet" uid="uid://dwd77waqh8ebe" path="res://Resources/Files/highlight_tileset.tres" id="2_qtv3y"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_p8rbg"]
 size = Vector2(64, 64)
 
-[node name="Main" type="Node2D"]
+[node name="Main" type="Node"]
 script = ExtResource("1_p8rbg")
 
+[node name="GridManager" parent="." node_paths=PackedStringArray("_highLightTileMapLayerNode", "_baseTerrainTileMapLayerNode") instance=ExtResource("2_i3fi7")]
+_highLightTileMapLayerNode = NodePath("../HighLightTileMapLayer")
+_baseTerrainTileMapLayerNode = NodePath("../BaseTerrainTileMapLayer")
+
+[node name="BaseTerrainTileMapLayer" type="TileMapLayer" parent="."]
+tile_map_data = PackedByteArray("AAADAAEAAAAGAAAAAAAEAAEAAAAHAAAAAAAEAAIAAAAGAAEAAAADAAIAAAAGAAEAAAACAAIAAAAGAAEAAAACAAEAAAAFAAAAAAACAAMAAAAGAAEAAAADAAMAAAAGAAEAAAAEAAMAAAAGAAEAAAAFAAMAAAAGAAEAAAAGAAMAAAAGAAEAAAAHAAMAAAAGAAEAAAAIAAMAAAAGAAEAAAAIAAQAAAAGAAEAAAAHAAQAAAAGAAEAAAAHAAUAAAAGAAEAAAAIAAUAAAAGAAEAAAAJAAUAAAAGAAEAAAAJAAQAAAAGAAEAAAAJAAMAAAAGAAEAAAAJAAIAAAAGAAEAAAAJAAEAAAAFAAAAAAAKAAEAAAAHAAAAAAAKAAIAAAAHAAEAAAAKAAMAAAAHAAEAAAAKAAQAAAAHAAEAAAAKAAUAAAAGAAIAAAAGAAQAAAAGAAEAAAAFAAQAAAAGAAEAAAAEAAQAAAAGAAEAAAACAAQAAAAFAAIAAAADAAQAAAAGAAEAAAADAAUAAAAFAAIAAAAEAAUAAAAGAAEAAAAFAAUAAAAGAAEAAAAGAAUAAAAGAAEAAAAGAAYAAAAGAAIAAAAFAAIAAAAGAAAAAAAGAAIAAAAGAAAAAAAHAAIAAAAGAAEAAAAHAAEAAAAIAAAAAAAIAAIAAAAGAAAAAAAIAAYAAAAGAAEAAAAIAAcAAAAHAAIAAAAHAAcAAAAFAAIAAAAHAAYAAAAGAAEAAAAFAAYAAAAGAAIAAAAEAAYAAAAFAAIAAAAJAAYAAAAHAAIAAAABAAMAAAAFAAIAAAABAAIAAAAFAAAAAAALAAUAAAAHAAMAAAA=")
+tile_set = ExtResource("2_cmk6n")
+
 [node name="HighLightTileMapLayer" type="TileMapLayer" parent="."]
+modulate = Color(1, 1, 1, 0.447059)
 tile_set = ExtResource("2_qtv3y")
 
 [node name="Cursor" type="Sprite2D" parent="."]

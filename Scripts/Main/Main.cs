@@ -17,7 +17,7 @@ public partial class Main : Node
 
 
     // variables
-    private Vector2? _hoveredGridCell;               // to denote the active cell over which mouse is being hovered
+    private Vector2I? _hoveredGridCell;               // to denote the active cell over which mouse is being hovered
 
     public override void _Ready()
     {
@@ -32,7 +32,7 @@ public partial class Main : Node
 
     public override void _Process(double delta)
     {
-        Vector2 gridPosition = _gridManagerNode.GetMouseGridCellPosition();        
+        Vector2I gridPosition = _gridManagerNode.GetMouseGridCellPosition();        
         _cursorNode.GlobalPosition = gridPosition * Globals.GRID_SIZE;
 
         if ( _cursorNode.Visible && ( !_hoveredGridCell.HasValue || _hoveredGridCell.Value != gridPosition ) ) 

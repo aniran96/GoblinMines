@@ -1,3 +1,4 @@
+using Game.AutoLoads;
 using Godot;
 
 namespace Game.Components;
@@ -11,6 +12,7 @@ public partial class BuildingComponent : Node2D
 	public override void _Ready()
 	{
 		AddToGroup( nameof( BuildingComponent ) );
+		GameEvents.EmitBuildingPlaced( this );
 	}
 
 	public Vector2I GetGridCellPosition() 
@@ -21,5 +23,4 @@ public partial class BuildingComponent : Node2D
 		Vector2I gridPositionInt = new Vector2I( (int)gridPosition.X, (int)gridPosition.Y );
         return gridPositionInt;
 	}
-
 }

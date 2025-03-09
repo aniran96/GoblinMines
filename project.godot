@@ -18,7 +18,8 @@ config/icon="uid://eqtpsrx7wph6"
 
 [autoload]
 
-Globals="*res://Globals/Scripts/Globals.cs"
+Globals="*res://AutoLoads/Scripts/Globals.cs"
+GameEvents="*res://AutoLoads/Scenes/GameEvents.tscn"
 
 [display]
 

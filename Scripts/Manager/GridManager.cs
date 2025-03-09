@@ -2,6 +2,8 @@ using Godot;
 using System.Collections.Generic;
 using Game.Components;
 using System.Linq;
+using Game.AutoLoads;
+using System;
 
 namespace Game.Manager;
 
@@ -14,9 +16,16 @@ public partial class GridManager : Node
 
 	// variables
 	private HashSet<Vector2I> _occupiedCells = new(); // TO prevent buildings from being placed on top of each other
-	
-	
-	 public Vector2I GetMouseGridCellPosition() 
+
+
+    // called when the node enters the scene tree
+    public override void _Ready()
+    {
+		//var gameEvents = GetNode<GameEvents>( "/root/GameEvents" );
+		GameEvents.Instance.BuildingPlaced += OnBuildingPlaced;
+    }
+
+    public Vector2I GetMouseGridCellPosition() 
     {
         Vector2 mousePosition = _highLightTileMapLayerNode.GetGlobalMousePosition();
         Vector2 gridPosition = mousePosition / Globals.GRID_SIZE;
@@ -85,5 +94,10 @@ public partial class GridManager : Node
                 }
             }
 	}
-	
+
+	 private void OnBuildingPlaced( BuildingComponent buildingComponent )
+    {
+		MarkTileAsOccupied( buildingComponent.GetGridCellPosition() );        
+    }
+
 }

@@ -15,8 +15,8 @@ public partial class GridManager : Node
 						 _baseTerrainTileMapLayerNode;
 
 	// variables
-	private HashSet<Vector2I> _occupiedCells = new(); // TO prevent buildings from being placed on top of each other
-
+	private HashSet<Vector2I> _occupiedCells = new(), // TO prevent buildings from being placed on top of each other
+							  _validBuildableTiles = new();
 
     // called when the node enters the scene tree
     public override void _Ready()
@@ -36,20 +36,22 @@ public partial class GridManager : Node
 
 	public void HighLightBuildableTiles() 
 	{  
-		ClearHighLightedTiles();
-		var buildingComponents = GetTree().GetNodesInGroup( nameof( BuildingComponent ) ).Cast<BuildingComponent>();
-
-		foreach( var buildingComponent in buildingComponents ) 
-		{
-			HighLightValidTilesInRadius( buildingComponent.GetGridCellPosition(), buildingComponent.BuildableRadius );			
-		}
 		
+		foreach( var tilePosition in _validBuildableTiles ) 
+		{
+			_highLightTileMapLayerNode.SetCell( tilePosition, 0, Vector2I.Zero );
+		}
 
 	}
 
 	public void MarkTileAsOccupied( Vector2I tilePosition ) 
 	{
 		_occupiedCells.Add( tilePosition );
+	}
+
+	public bool IsTilePositionBuildable( Vector2I tilePosition ) 
+	{
+		return _validBuildableTiles.Contains( tilePosition );
 	}
 
 	public bool IsTilePositionValid( Vector2I tilePosition ) 
@@ -74,10 +76,20 @@ public partial class GridManager : Node
 		_highLightTileMapLayerNode.Clear();
 	}
 
-	private void HighLightValidTilesInRadius( Vector2I rootCell, int radius ) 
+
+	 private void OnBuildingPlaced( BuildingComponent buildingComponent )
+    {
+		UpdateValidBuildableTiles( buildingComponent );
+		MarkTileAsOccupied( buildingComponent.GetGridCellPosition() ); 
+		       
+    }
+
+	private void UpdateValidBuildableTiles( BuildingComponent buildingComponent ) 
 	{
-	//	ClearHighLightedTiles();
-            for ( var x = rootCell.X - radius; x <= rootCell.X + radius; x++ ) 
+		var rootCell = buildingComponent.GetGridCellPosition();
+		var radius = buildingComponent.BuildableRadius;
+
+		 for ( var x = rootCell.X - radius; x <= rootCell.X + radius; x++ ) 
             {
                 for ( var y = rootCell.Y - radius; y <= rootCell.Y + radius; y++ ) 
                 {
@@ -89,15 +101,11 @@ public partial class GridManager : Node
 					}
 					else 
 					{
-						_highLightTileMapLayerNode.SetCell(tilePosition, 0, Vector2I.Zero);
+						_validBuildableTiles.Add( tilePosition );
 					}
                 }
             }
+		
 	}
-
-	 private void OnBuildingPlaced( BuildingComponent buildingComponent )
-    {
-		MarkTileAsOccupied( buildingComponent.GetGridCellPosition() );        
-    }
 
 }

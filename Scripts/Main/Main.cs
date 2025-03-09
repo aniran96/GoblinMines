@@ -51,7 +51,7 @@ public partial class Main : Node
 
     public override void _UnhandledInput(InputEvent evt)
     {
-        if ( _hoveredGridCell.HasValue && evt.IsActionPressed( "left_click" ) && _gridManagerNode.IsTilePositionValid( _hoveredGridCell.Value ) ) 
+        if ( _hoveredGridCell.HasValue && evt.IsActionPressed( "left_click" ) && _gridManagerNode.IsTilePositionBuildable( _hoveredGridCell.Value ) ) 
         {
             PlaceBuildingAtHoveredCellPosition();
             _cursorNode.Visible = false;

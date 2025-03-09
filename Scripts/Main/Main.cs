@@ -38,7 +38,7 @@ public partial class Main : Node
         if ( _cursorNode.Visible && ( !_hoveredGridCell.HasValue || _hoveredGridCell.Value != gridPosition ) ) 
         {
             _hoveredGridCell = gridPosition;
-            _gridManagerNode.HighLightValidTilesInRadius( _hoveredGridCell.Value, Globals.RADIUS );
+            _gridManagerNode.HighLightBuildableTiles();
         }
        
 //        GD.Print( gridPosition );

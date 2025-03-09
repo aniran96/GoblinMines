@@ -1,5 +1,7 @@
 using Godot;
 using System.Collections.Generic;
+using Game.Components;
+using System.Linq;
 
 namespace Game.Manager;
 
@@ -23,6 +25,19 @@ public partial class GridManager : Node
         return gridPositionInt;
     }
 
+	public void HighLightBuildableTiles() 
+	{  
+		ClearHighLightedTiles();
+		var buildingComponents = GetTree().GetNodesInGroup( nameof( BuildingComponent ) ).Cast<BuildingComponent>();
+
+		foreach( var buildingComponent in buildingComponents ) 
+		{
+			HighLightValidTilesInRadius( buildingComponent.GetGridCellPosition(), buildingComponent.BuildableRadius );			
+		}
+		
+
+	}
+
 	public void MarkTileAsOccupied( Vector2I tilePosition ) 
 	{
 		_occupiedCells.Add( tilePosition );
@@ -45,9 +60,14 @@ public partial class GridManager : Node
 		return isContains;
 	}
 
-	public void HighLightValidTilesInRadius( Vector2I rootCell, int radius ) 
+	public void ClearHighLightedTiles() 
 	{
-		ClearHighLightedTiles();
+		_highLightTileMapLayerNode.Clear();
+	}
+
+	private void HighLightValidTilesInRadius( Vector2I rootCell, int radius ) 
+	{
+	//	ClearHighLightedTiles();
             for ( var x = rootCell.X - radius; x <= rootCell.X + radius; x++ ) 
             {
                 for ( var y = rootCell.Y - radius; y <= rootCell.Y + radius; y++ ) 
@@ -65,9 +85,5 @@ public partial class GridManager : Node
                 }
             }
 	}
-
-	public void ClearHighLightedTiles() 
-	{
-		_highLightTileMapLayerNode.Clear();
-	}
+	
 }

@@ -36,6 +36,18 @@ project/assembly_name="Goblin Mines"
 naming/scene_name_casing=1
 naming/script_name_casing=1
 
+[file_customization]
+
+folder_colors={
+"res://Assets/": "red",
+"res://AutoLoads/": "orange",
+"res://Classes/": "yellow",
+"res://Downloads/": "purple",
+"res://Resources/": "green",
+"res://Scenes/": "teal",
+"res://Scripts/": "blue"
+}
+
 [input]
 
 left_click={

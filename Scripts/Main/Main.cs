@@ -38,7 +38,7 @@ public partial class Main : Node
         if ( _cursorNode.Visible && ( !_hoveredGridCell.HasValue || _hoveredGridCell.Value != gridPosition ) ) 
         {
             _hoveredGridCell = gridPosition;
-            _gridManagerNode.HighLightBuildableTiles();
+            _gridManagerNode.HighLightExpandedBuildableTiles( _hoveredGridCell.Value, Globals.RADIUS );
         }
        
 //        GD.Print( gridPosition );
@@ -68,10 +68,9 @@ public partial class Main : Node
         }
         Node2D building = _buildingScene.Instantiate<Node2D>();
         AddChild( building );
-
         Vector2 gridPosition = _hoveredGridCell.Value;
         building.GlobalPosition = gridPosition * Globals.GRID_SIZE;
-        _gridManagerNode.MarkTileAsOccupied( _hoveredGridCell.Value );
+      //  _gridManagerNode.MarkTileAsOccupied( _hoveredGridCell.Value );
 
         _hoveredGridCell = null;
         _gridManagerNode.ClearHighLightedTiles();
@@ -80,6 +79,7 @@ public partial class Main : Node
     private void OnButtonPressed()
     {
         _cursorNode.Visible = true;
+        _gridManagerNode.HighLightBuildableTiles();
     }
 
      

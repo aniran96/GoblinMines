@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Game.Components;
 using System.Linq;
 using Game.AutoLoads;
-using System;
+
 
 namespace Game.Manager;
 
@@ -15,9 +15,9 @@ public partial class GridManager : Node
 						 _baseTerrainTileMapLayerNode;
 
 	// variables
-	private HashSet<Vector2I> _occupiedCells = new(), // TO prevent buildings from being placed on top of each other
-							  _validBuildableTiles = new();
-
+	private HashSet<Vector2I> _validBuildableTiles = new();
+															 //_occupiedCells = new(), // TO prevent buildings from being placed on top of each other
+							  
     // called when the node enters the scene tree
     public override void _Ready()
     {
@@ -44,17 +44,28 @@ public partial class GridManager : Node
 
 	}
 
-	public void MarkTileAsOccupied( Vector2I tilePosition ) 
+	public void HighLightExpandedBuildableTiles( Vector2I rootCell, int radius ) 
 	{
-		_occupiedCells.Add( tilePosition );
+		ClearHighLightedTiles();
+		HighLightBuildableTiles();
+		var validTiles = GetValidTilesInRadius( rootCell, radius ).ToHashSet();
+		var expandedTiles = validTiles.Except( _validBuildableTiles ).Except( GetValidTiles() );
+		Vector2I atlasCoordinates = new Vector2I( 1, 0 );
+
+		foreach( var tilePosition in expandedTiles ) 
+		{
+			_highLightTileMapLayerNode.SetCell( tilePosition, 0, atlasCoordinates );
+		}
 	}
+
+
 
 	public bool IsTilePositionBuildable( Vector2I tilePosition ) 
 	{
 		return _validBuildableTiles.Contains( tilePosition );
 	}
 
-	public bool IsTilePositionValid( Vector2I tilePosition ) 
+	private bool IsTilePositionValid( Vector2I tilePosition ) 
 	{
 		var customData = _baseTerrainTileMapLayerNode.GetCellTileData( tilePosition );
 
@@ -62,17 +73,15 @@ public partial class GridManager : Node
 		{
 			return false;
 		}
-		else if ( !(bool)customData.GetCustomData("buildable") ) 
-		{
-			return false;
-		}
+		return (bool)customData.GetCustomData( "buildable" );
 
-		bool isContains = !_occupiedCells.Contains( tilePosition );
-		return isContains;
+		// bool isContains = !_occupiedCells.Contains( tilePosition );
+		// return isContains;
 	}
 
 	public void ClearHighLightedTiles() 
 	{
+		
 		_highLightTileMapLayerNode.Clear();
 	}
 
@@ -80,7 +89,9 @@ public partial class GridManager : Node
 	 private void OnBuildingPlaced( BuildingComponent buildingComponent )
     {
 		UpdateValidBuildableTiles( buildingComponent );
-		MarkTileAsOccupied( buildingComponent.GetGridCellPosition() ); 
+		
+		
+		//MarkTileAsOccupied( buildingComponent.GetGridCellPosition() ); 
 		       
     }
 
@@ -89,7 +100,24 @@ public partial class GridManager : Node
 		var rootCell = buildingComponent.GetGridCellPosition();
 		var radius = buildingComponent.BuildableRadius;
 
-		 for ( var x = rootCell.X - radius; x <= rootCell.X + radius; x++ ) 
+		var validTiles = GetValidTilesInRadius( rootCell, radius );
+		_validBuildableTiles.UnionWith( validTiles );
+
+		_validBuildableTiles.ExceptWith( GetValidTiles() );
+
+		// foreach( var existingBuildingComponents in buildingComponents ) 
+		// {
+		// 	_validBuildableTiles.Remove( existingBuildingComponents.GetGridCellPosition() );
+		// }
+
+		
+	}
+
+	private List<Vector2I> GetValidTilesInRadius( Vector2I rootCell, int radius ) 
+	{
+		List<Vector2I> result = new();
+
+		for ( var x = rootCell.X - radius; x <= rootCell.X + radius; x++ ) 
             {
                 for ( var y = rootCell.Y - radius; y <= rootCell.Y + radius; y++ ) 
                 {
@@ -101,11 +129,24 @@ public partial class GridManager : Node
 					}
 					else 
 					{
-						_validBuildableTiles.Add( tilePosition );
+						result.Add( tilePosition );
 					}
                 }
             }
-		
+			return result;
 	}
+
+	private IEnumerable<Vector2I> GetValidTiles() 
+	{
+		var buildingComponents = GetTree().GetNodesInGroup( nameof( BuildingComponent ) ).Cast<BuildingComponent>();
+		var occupiedTiles = buildingComponents.Select( x => x.GetGridCellPosition() );
+		return occupiedTiles;
+	}
+
+		// public void MarkTileAsOccupied( Vector2I tilePosition ) 
+	// {
+
+	// 		_occupiedCells.Add( tilePosition );  
+	// }
 
 }

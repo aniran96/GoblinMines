@@ -16,13 +16,14 @@ public partial class GridManager : Node
 
 	// variables
 	private HashSet<Vector2I> _validBuildableTiles = new();
-															 //_occupiedCells = new(), // TO prevent buildings from being placed on top of each other
-							  
-    // called when the node enters the scene tree
+	private List<TileMapLayer> _allTileMapLayers = new();	
+
     public override void _Ready()
     {
-		//var gameEvents = GetNode<GameEvents>( "/root/GameEvents" );
+		_allTileMapLayers = GetAllTileMapLayers( _baseTerrainTileMapLayerNode );
 		GameEvents.Instance.BuildingPlaced += OnBuildingPlaced;
+
+	
     }
 
     public Vector2I GetMouseGridCellPosition() 
@@ -33,6 +34,23 @@ public partial class GridManager : Node
 		Vector2I gridPositionInt = new Vector2I( (int)gridPosition.X, (int)gridPosition.Y );
         return gridPositionInt;
     }
+
+	private List<TileMapLayer> GetAllTileMapLayers( TileMapLayer rootTileMapLayer ) 
+	{
+		var result = new List<TileMapLayer>();
+		var children = rootTileMapLayer.GetChildren();
+		children.Reverse();
+
+		foreach ( var child in children ) 
+		{
+			if ( child is TileMapLayer childTileMapLayer ) 
+			{
+				result.AddRange( GetAllTileMapLayers( childTileMapLayer ) );
+			}
+		}
+		result.Add( rootTileMapLayer );
+		return result;
+	}
 
 	public void HighLightBuildableTiles() 
 	{  
@@ -67,13 +85,17 @@ public partial class GridManager : Node
 
 	private bool IsTilePositionValid( Vector2I tilePosition ) 
 	{
-		var customData = _baseTerrainTileMapLayerNode.GetCellTileData( tilePosition );
-
-		if ( customData == null ) 
+		foreach ( var tileMap in _allTileMapLayers ) 
 		{
-			return false;
+			var customData = tileMap.GetCellTileData( tilePosition );
+			if ( customData == null ) 
+			{
+				continue;
+			}
+			return (bool)customData.GetCustomData( "buildable" );
 		}
-		return (bool)customData.GetCustomData( "buildable" );
+		return false;
+
 
 		// bool isContains = !_occupiedCells.Contains( tilePosition );
 		// return isContains;

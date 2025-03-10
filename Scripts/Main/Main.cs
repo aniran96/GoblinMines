@@ -1,3 +1,4 @@
+using System;
 using Game.Manager;
 using Godot;
 
@@ -9,11 +10,14 @@ public partial class Main : Node
     private GridManager _gridManagerNode;
     // node references
     private Sprite2D _cursorNode;
-    private Button _placeBuildingButtonNode;
+    private Button _placeTowerButtonNode,
+                   _placeVillageButtonNode;
     private Node2D _ySortRootNode;
 
     // scene references
-    private PackedScene _buildingScene;
+    private PackedScene _towerScene,
+                        _villageScene,
+                        _toPlaceBuildingScene;
 
 
 
@@ -24,9 +28,11 @@ public partial class Main : Node
     {
         _ySortRootNode = GetNode<Node2D>("YSortRoot");
         _gridManagerNode = GetNode<GridManager>("GridManager");
-        _buildingScene = GD.Load<PackedScene>( "res://Scenes/Building/Building.tscn" );
+        _towerScene = GD.Load<PackedScene>( "res://Scenes/Building/Tower.tscn" );   
+        _villageScene = GD.Load<PackedScene>( "res://Scenes/Building/Village.tscn" );  
         _cursorNode = GetNode<Sprite2D>("Cursor");
-        _placeBuildingButtonNode = GetNode<Button>("PlaceBuildingButton");
+        _placeTowerButtonNode = GetNode<Button>("PlaceTowerButton");
+        _placeVillageButtonNode = GetNode<Button>("PlaceVillageButton");
         ConnectSignals();
         _cursorNode.Visible = false;
     
@@ -48,7 +54,8 @@ public partial class Main : Node
 
     private void ConnectSignals() 
     {
-        _placeBuildingButtonNode.Pressed += OnButtonPressed;
+        _placeTowerButtonNode.Pressed += OnTowerButtonPressed;
+        _placeVillageButtonNode.Pressed += OnVillageButtonPressed;
     }
 
     public override void _UnhandledInput(InputEvent evt)
@@ -60,15 +67,13 @@ public partial class Main : Node
         }
     }
 
-   
-
     private void PlaceBuildingAtHoveredCellPosition() 
     {
         if ( !_hoveredGridCell.HasValue ) 
         {
             return;
         }
-        Node2D building = _buildingScene.Instantiate<Node2D>();
+        Node2D building = _toPlaceBuildingScene.Instantiate<Node2D>();
         _ySortRootNode.AddChild( building );
         Vector2 gridPosition = _hoveredGridCell.Value;
         building.GlobalPosition = gridPosition * Globals.GRID_SIZE;
@@ -78,8 +83,16 @@ public partial class Main : Node
         _gridManagerNode.ClearHighLightedTiles();
     }
 
-    private void OnButtonPressed()
+    private void OnTowerButtonPressed()
     {
+        _toPlaceBuildingScene = _towerScene;
+        _cursorNode.Visible = true;
+        _gridManagerNode.HighLightBuildableTiles();
+    }
+
+     private void OnVillageButtonPressed()
+    {
+        _toPlaceBuildingScene = _villageScene;
         _cursorNode.Visible = true;
         _gridManagerNode.HighLightBuildableTiles();
     }

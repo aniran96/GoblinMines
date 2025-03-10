@@ -10,6 +10,7 @@ public partial class Main : Node
     // node references
     private Sprite2D _cursorNode;
     private Button _placeBuildingButtonNode;
+    private Node2D _ySortRootNode;
 
     // scene references
     private PackedScene _buildingScene;
@@ -21,6 +22,7 @@ public partial class Main : Node
 
     public override void _Ready()
     {
+        _ySortRootNode = GetNode<Node2D>("YSortRoot");
         _gridManagerNode = GetNode<GridManager>("GridManager");
         _buildingScene = GD.Load<PackedScene>( "res://Scenes/Building/Building.tscn" );
         _cursorNode = GetNode<Sprite2D>("Cursor");
@@ -67,7 +69,7 @@ public partial class Main : Node
             return;
         }
         Node2D building = _buildingScene.Instantiate<Node2D>();
-        AddChild( building );
+        _ySortRootNode.AddChild( building );
         Vector2 gridPosition = _hoveredGridCell.Value;
         building.GlobalPosition = gridPosition * Globals.GRID_SIZE;
       //  _gridManagerNode.MarkTileAsOccupied( _hoveredGridCell.Value );

@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=4 uid="uid://cp1lq04roerhl"]
+[gd_scene load_steps=8 format=4 uid="uid://cp1lq04roerhl"]
 
 [ext_resource type="Script" uid="uid://cc4xo32a8y2s3" path="res://Scripts/Main/Main.cs" id="1_p8rbg"]
 [ext_resource type="TileSet" uid="uid://bm4ftgkf42ksi" path="res://Resources/Files/tiles.tres" id="2_cmk6n"]
 [ext_resource type="PackedScene" uid="uid://q5cgro8ysgj2" path="res://Scenes/Manager/GridManager.tscn" id="2_i3fi7"]
 [ext_resource type="TileSet" uid="uid://dwd77waqh8ebe" path="res://Resources/Files/highlight_tileset.tres" id="2_qtv3y"]
 [ext_resource type="PackedScene" uid="uid://c2fw4xwmbkcyt" path="res://Scenes/Building/Base.tscn" id="5_o8wgc"]
+[ext_resource type="PackedScene" uid="uid://bnolnh81ebl4f" path="res://Scenes/Building/Building.tscn" id="5_w20t6"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_p8rbg"]
 size = Vector2(64, 64)
@@ -14,15 +15,26 @@ script = ExtResource("1_p8rbg")
 
 [node name="GridManager" parent="." node_paths=PackedStringArray("_highLightTileMapLayerNode", "_baseTerrainTileMapLayerNode") instance=ExtResource("2_i3fi7")]
 _highLightTileMapLayerNode = NodePath("../HighLightTileMapLayer")
-_baseTerrainTileMapLayerNode = NodePath("../BaseTerrainTileMapLayer")
+_baseTerrainTileMapLayerNode = NodePath("../YSortRoot/BaseTerrainTileMapLayer")
 
-[node name="BaseTerrainTileMapLayer" type="TileMapLayer" parent="."]
+[node name="YSortRoot" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="BaseTerrainTileMapLayer" type="TileMapLayer" parent="YSortRoot"]
+y_sort_enabled = true
 tile_map_data = PackedByteArray("AAADAAEAAAAGAAAAAAAEAAEAAAAHAAAAAAAEAAIAAAAGAAEAAAADAAIAAAAGAAEAAAACAAIAAAAGAAEAAAACAAEAAAAFAAAAAAACAAMAAAAGAAEAAAADAAMAAAAGAAEAAAAEAAMAAAAGAAEAAAAFAAMAAAAGAAEAAAAGAAMAAAAGAAEAAAAHAAMAAAAGAAEAAAAIAAMAAAAGAAEAAAAIAAQAAAAGAAEAAAAHAAQAAAAGAAEAAAAHAAUAAAAGAAEAAAAIAAUAAAAGAAEAAAAJAAUAAAAGAAEAAAAJAAQAAAAGAAEAAAAJAAMAAAAGAAEAAAAJAAIAAAAGAAEAAAAJAAEAAAAFAAAAAAAKAAEAAAAHAAAAAAAKAAIAAAAHAAEAAAAKAAMAAAAHAAEAAAAKAAQAAAAHAAEAAAAKAAUAAAAGAAIAAAAGAAQAAAAGAAEAAAAFAAQAAAAGAAEAAAAEAAQAAAAGAAEAAAACAAQAAAAFAAIAAAADAAQAAAAGAAEAAAADAAUAAAAFAAIAAAAEAAUAAAAGAAEAAAAFAAUAAAAGAAEAAAAGAAUAAAAGAAEAAAAGAAYAAAAGAAIAAAAFAAIAAAAGAAAAAAAGAAIAAAAGAAAAAAAHAAIAAAAGAAEAAAAHAAEAAAAIAAAAAAAIAAIAAAAGAAAAAAAIAAYAAAAGAAEAAAAIAAcAAAAHAAIAAAAHAAcAAAAFAAIAAAAHAAYAAAAGAAEAAAAFAAYAAAAGAAIAAAAEAAYAAAAFAAIAAAAJAAYAAAAHAAIAAAABAAMAAAAFAAIAAAABAAIAAAAFAAAAAAALAAUAAAAHAAMAAAA=")
 tile_set = ExtResource("2_cmk6n")
 
-[node name="ResourceTileMapLayer" type="TileMapLayer" parent="BaseTerrainTileMapLayer"]
-tile_map_data = PackedByteArray("AAAEAAIAAQAAAAAAAAAHAAIAAQAAAAAAAAAGAAIAAQAAAAAAAAAFAAIAAQAAAAAAAAA=")
+[node name="ResourceTileMapLayer" type="TileMapLayer" parent="YSortRoot/BaseTerrainTileMapLayer"]
+y_sort_enabled = true
+tile_map_data = PackedByteArray("AAAEAAIAAQAAAAAAAAAHAAIAAQAAAAAAAAAGAAIAAQAAAAAAAAAFAAIAAQAAAAAAAAADAAMAAQAAAAAAAAAIAAMAAQAAAAAAAAAGAAMAAQAAAAAAAAAFAAMAAQAAAAAAAAAEAAMAAQAAAAAAAAAHAAMAAQAAAAAAAAA=")
 tile_set = ExtResource("2_cmk6n")
+
+[node name="Base" parent="YSortRoot" instance=ExtResource("5_o8wgc")]
+position = Vector2(448, 256)
+
+[node name="Building" parent="YSortRoot" instance=ExtResource("5_w20t6")]
+position = Vector2(384, 320)
 
 [node name="HighLightTileMapLayer" type="TileMapLayer" parent="."]
 modulate = Color(1, 1, 1, 0.447059)
@@ -40,6 +52,3 @@ offset_bottom = 646.0
 size_flags_horizontal = 8
 size_flags_vertical = 8
 text = "Place Building"
-
-[node name="Base" parent="." instance=ExtResource("5_o8wgc")]
-position = Vector2(448, 256)

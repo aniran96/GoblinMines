@@ -1,3 +1,4 @@
+using System;
 using GoblinMines.Manager;
 using GoblinMines.Resources.Scripts.Building;
 using Godot;
@@ -60,6 +61,7 @@ public partial class Main : Node
     {
         _placeTowerButtonNode.Pressed += OnPlaceTowerButtonPressed;
         _placeVillageButtonNode.Pressed += OnPlaceVillageButtonPressed;
+        _gridManagerNode.ResourceTilesUpdated += OnResourceTilesUpdated;
     }
 
     public override void _UnhandledInput(InputEvent evt)
@@ -97,6 +99,11 @@ public partial class Main : Node
          _toPlaceBuildingResource = _villageResource;
         _cursorNode.Visible = true;
         _gridManagerNode.HighLightBuildableTiles();
+    }
+
+     private void OnResourceTilesUpdated(int resourceCount)
+    {
+        GD.Print( resourceCount );     
     }
 
      

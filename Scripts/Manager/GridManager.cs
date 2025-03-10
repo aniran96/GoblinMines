@@ -1,14 +1,19 @@
 using Godot;
 using System.Collections.Generic;
-using Game.Scripts.Components;
+using GoblinMines.Scripts.Components;
 using System.Linq;
-using Game.AutoLoads.Scripts;
+using GoblinMines.AutoLoads.Scripts;
+using System.ComponentModel.DataAnnotations;
 
 
-namespace Game.Manager;
+namespace GoblinMines.Manager;
 
 public partial class GridManager : Node
 {
+	// constants
+	public const string IS_BUILDABLE = "is_buildable";
+	public const string IS_WOOD = "is_wood";
+
 	//node references
 	[ Export ] 
 	private TileMapLayer _highLightTileMapLayerNode;
@@ -65,13 +70,23 @@ public partial class GridManager : Node
 
 	public void HighLightExpandedBuildableTiles( Vector2I rootCell, int radius ) 
 	{
-		ClearHighLightedTiles();
 		HighLightBuildableTiles();
 		var validTiles = GetValidTilesInRadius( rootCell, radius ).ToHashSet();
 		var expandedTiles = validTiles.Except( _validBuildableTiles ).Except( GetValidTiles() );
 		Vector2I atlasCoordinates = new Vector2I( 1, 0 );
 
 		foreach( var tilePosition in expandedTiles ) 
+		{
+			_highLightTileMapLayerNode.SetCell( tilePosition, 0, atlasCoordinates );
+		}
+	}
+
+	public void HighLightResourceTiles( Vector2I rootCell, int radius ) 
+	{
+		var resourceTiles = GetResourceTilesInRadius( rootCell, radius );
+		Vector2I atlasCoordinates = new Vector2I( 1, 0 );
+
+		foreach( var tilePosition in resourceTiles ) 
 		{
 			_highLightTileMapLayerNode.SetCell( tilePosition, 0, atlasCoordinates );
 		}
@@ -93,13 +108,23 @@ public partial class GridManager : Node
 			{
 				continue;
 			}
-			return (bool)customData.GetCustomData( "buildable" );
+			return (bool)customData.GetCustomData( IS_BUILDABLE );
 		}
 		return false;
-
-
-		// bool isContains = !_occupiedCells.Contains( tilePosition );
-		// return isContains;
+	}
+	
+	public bool isTilePositionResource( Vector2I tilePosition ) 
+	{
+		foreach ( var tileMap in _allTileMapLayers ) 
+		{
+			var customData = tileMap.GetCellTileData( tilePosition );
+			if ( customData == null ) 
+			{
+				continue;
+			}
+			return (bool)customData.GetCustomData( IS_WOOD );
+		}
+		return false;
 	}
 
 	public void ClearHighLightedTiles() 
@@ -159,17 +184,31 @@ public partial class GridManager : Node
 			return result;
 	}
 
+	private List<Vector2I> GetResourceTilesInRadius( Vector2I rootcell, int radius ) 
+	{
+		List<Vector2I> result = new();
+		for ( var x = rootcell.X - radius; x <= rootcell.X + radius; x++) 
+		{
+			for ( var y = rootcell.Y - radius; y <= rootcell.X + radius; y++ ) 
+			{
+				var tilePosition = new Vector2I( x, y);
+				if ( !isTilePositionResource( tilePosition ) ) 
+				{
+					continue;
+				}
+				else 
+				{
+					result.Add( tilePosition );
+				}
+			}
+		}
+		return result;
+	}
+
 	private IEnumerable<Vector2I> GetValidTiles() 
 	{
 		var buildingComponents = GetTree().GetNodesInGroup( nameof( BuildingComponent ) ).Cast<BuildingComponent>();
 		var occupiedTiles = buildingComponents.Select( x => x.GetGridCellPosition() );
 		return occupiedTiles;
 	}
-
-		// public void MarkTileAsOccupied( Vector2I tilePosition ) 
-	// {
-
-	// 		_occupiedCells.Add( tilePosition );  
-	// }
-
 }

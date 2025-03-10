@@ -1,6 +1,6 @@
 using Godot;
 
-namespace Game.Resources.Scripts.Building;
+namespace GoblinMines.Resources.Scripts.Building;
 
 [ GlobalClass ]
 public partial class BuildingResource : Resource

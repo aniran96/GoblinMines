@@ -1,8 +1,8 @@
-using Game.AutoLoads.Scripts;
-using Game.Resources.Scripts.Building;
+using GoblinMines.AutoLoads.Scripts;
+using GoblinMines.Resources.Scripts.Building;
 using Godot;
 
-namespace Game.Scripts.Components;
+namespace GoblinMines.Scripts.Components;
 
 public partial class BuildingComponent : Node2D
 {

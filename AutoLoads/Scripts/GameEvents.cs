@@ -1,7 +1,7 @@
 using Godot;
-using Game.Scripts.Components;
+using GoblinMines.Scripts.Components;
 
-namespace Game.AutoLoads.Scripts;
+namespace GoblinMines.AutoLoads.Scripts;
 
 public partial class GameEvents : Node
 {

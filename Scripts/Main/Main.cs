@@ -1,5 +1,5 @@
-using Game.Manager;
-using Game.Resources.Scripts.Building;
+using GoblinMines.Manager;
+using GoblinMines.Resources.Scripts.Building;
 using Godot;
 
 namespace GoblinMines;
@@ -49,9 +49,11 @@ public partial class Main : Node
         if ( _toPlaceBuildingResource != null &&_cursorNode.Visible && ( !_hoveredGridCell.HasValue || _hoveredGridCell.Value != gridPosition ) ) 
         {
             _hoveredGridCell = gridPosition;
+            _gridManagerNode.ClearHighLightedTiles();
             _gridManagerNode.HighLightExpandedBuildableTiles( _hoveredGridCell.Value, _toPlaceBuildingResource.BuildableRadius );
-        }
-       
+            _gridManagerNode.HighLightResourceTiles( _hoveredGridCell.Value, _toPlaceBuildingResource.ResourceRadius );
+
+        }       
     }
 
     private void ConnectSignals() 

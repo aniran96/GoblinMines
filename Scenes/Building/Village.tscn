@@ -7,6 +7,7 @@
 y_sort_enabled = true
 
 [node name="BuildingComponent" parent="." instance=ExtResource("1_su262")]
+_buildingResourcePath = "uid://deka0o7l01yrw"
 
 [node name="VillageSprite" type="Sprite2D" parent="."]
 position = Vector2(32, 32)

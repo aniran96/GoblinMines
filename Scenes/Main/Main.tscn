@@ -1,9 +1,9 @@
 [gd_scene load_steps=7 format=4 uid="uid://cp1lq04roerhl"]
 
 [ext_resource type="Script" uid="uid://cc4xo32a8y2s3" path="res://Scripts/Main/Main.cs" id="1_p8rbg"]
-[ext_resource type="TileSet" uid="uid://bm4ftgkf42ksi" path="res://Resources/Files/tiles.tres" id="2_cmk6n"]
+[ext_resource type="TileSet" uid="uid://bm4ftgkf42ksi" path="res://Resources/Files/Tiles/tiles.tres" id="2_cmk6n"]
 [ext_resource type="PackedScene" uid="uid://q5cgro8ysgj2" path="res://Scenes/Manager/GridManager.tscn" id="2_i3fi7"]
-[ext_resource type="TileSet" uid="uid://dwd77waqh8ebe" path="res://Resources/Files/highlight_tileset.tres" id="2_qtv3y"]
+[ext_resource type="TileSet" uid="uid://dwd77waqh8ebe" path="res://Resources/Files/Tiles/highlight_tileset.tres" id="2_qtv3y"]
 [ext_resource type="PackedScene" uid="uid://c2fw4xwmbkcyt" path="res://Scenes/Building/Base.tscn" id="5_o8wgc"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_p8rbg"]

@@ -1,6 +1,7 @@
 using Godot;
-using Game.Components;
-namespace Game.AutoLoads;
+using Game.Scripts.Components;
+
+namespace Game.AutoLoads.Scripts;
 
 public partial class GameEvents : Node
 {

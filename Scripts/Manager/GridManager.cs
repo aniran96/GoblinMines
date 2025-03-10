@@ -1,8 +1,8 @@
 using Godot;
 using System.Collections.Generic;
-using Game.Components;
+using Game.Scripts.Components;
 using System.Linq;
-using Game.AutoLoads;
+using Game.AutoLoads.Scripts;
 
 
 namespace Game.Manager;
@@ -11,8 +11,9 @@ public partial class GridManager : Node
 {
 	//node references
 	[ Export ] 
-	private TileMapLayer _highLightTileMapLayerNode,
-						 _baseTerrainTileMapLayerNode;
+	private TileMapLayer _highLightTileMapLayerNode;
+	[ Export ]
+	private TileMapLayer _baseTerrainTileMapLayerNode;
 
 	// variables
 	private HashSet<Vector2I> _validBuildableTiles = new();
@@ -120,7 +121,7 @@ public partial class GridManager : Node
 	private void UpdateValidBuildableTiles( BuildingComponent buildingComponent ) 
 	{
 		var rootCell = buildingComponent.GetGridCellPosition();
-		var radius = buildingComponent.BuildableRadius;
+		var radius = buildingComponent.BuildingResource.BuildableRadius;
 
 		var validTiles = GetValidTilesInRadius( rootCell, radius );
 		_validBuildableTiles.UnionWith( validTiles );

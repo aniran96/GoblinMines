@@ -1,16 +1,26 @@
-using Game.AutoLoads;
+using Game.AutoLoads.Scripts;
+using Game.Resources.Scripts.Building;
 using Godot;
 
-namespace Game.Components;
+namespace Game.Scripts.Components;
 
 public partial class BuildingComponent : Node2D
 {
-	// properties
-	[ Export ]
-	public int BuildableRadius { get; private set; }
+
+	//exported variables
+	[Export( PropertyHint.File, "*.tres") ]
+	public string _buildingResourcePath;
+
+	// variables/properties
+	public BuildingResource BuildingResource { get; private set; }
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		if ( _buildingResourcePath != null ) 
+		{
+			BuildingResource = GD.Load<BuildingResource>( _buildingResourcePath );
+		}
 		AddToGroup( nameof( BuildingComponent ) );
 		Callable.From( () => GameEvents.EmitBuildingPlaced( this )).CallDeferred();
 	}

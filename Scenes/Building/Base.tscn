@@ -9,7 +9,7 @@ size = Vector2(64, 64)
 y_sort_enabled = true
 
 [node name="BuildingComponent" parent="." instance=ExtResource("1_4gdy7")]
-BuildableRadius = 2
+_buildingResourcePath = "uid://6c75t7lc6ihk"
 
 [node name="BaseSprite" type="Sprite2D" parent="."]
 modulate = Color(0.333333, 0.254902, 1, 1)

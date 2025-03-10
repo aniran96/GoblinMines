@@ -1,5 +1,5 @@
-using System;
 using Game.Manager;
+using Game.Resources.Scripts.Building;
 using Godot;
 
 namespace GoblinMines;
@@ -10,14 +10,17 @@ public partial class Main : Node
     private GridManager _gridManagerNode;
     // node references
     private Sprite2D _cursorNode;
-    private Button _placeTowerButtonNode,
-                   _placeVillageButtonNode;
+    private Button _placeTowerButtonNode;
+    private Button _placeVillageButtonNode;
     private Node2D _ySortRootNode;
 
     // scene references
-    private PackedScene _towerScene,
-                        _villageScene,
-                        _toPlaceBuildingScene;
+    private BuildingResource _villageResource;
+                        
+    
+    // resources
+    private BuildingResource _towerResource;
+    private BuildingResource _toPlaceBuildingResource;
 
 
 
@@ -26,10 +29,10 @@ public partial class Main : Node
 
     public override void _Ready()
     {
+        _towerResource = GD.Load<BuildingResource>( "res://Resources/Files/Buildings/tower.tres" );
+        _villageResource = GD.Load<BuildingResource>( "res://Resources/Files/Buildings/village.tres" );  
         _ySortRootNode = GetNode<Node2D>("YSortRoot");
         _gridManagerNode = GetNode<GridManager>("GridManager");
-        _towerScene = GD.Load<PackedScene>( "res://Scenes/Building/Tower.tscn" );   
-        _villageScene = GD.Load<PackedScene>( "res://Scenes/Building/Village.tscn" );  
         _cursorNode = GetNode<Sprite2D>("Cursor");
         _placeTowerButtonNode = GetNode<Button>("PlaceTowerButton");
         _placeVillageButtonNode = GetNode<Button>("PlaceVillageButton");
@@ -43,19 +46,18 @@ public partial class Main : Node
         Vector2I gridPosition = _gridManagerNode.GetMouseGridCellPosition();        
         _cursorNode.GlobalPosition = gridPosition * Globals.GRID_SIZE;
 
-        if ( _cursorNode.Visible && ( !_hoveredGridCell.HasValue || _hoveredGridCell.Value != gridPosition ) ) 
+        if ( _toPlaceBuildingResource != null &&_cursorNode.Visible && ( !_hoveredGridCell.HasValue || _hoveredGridCell.Value != gridPosition ) ) 
         {
             _hoveredGridCell = gridPosition;
-            _gridManagerNode.HighLightExpandedBuildableTiles( _hoveredGridCell.Value, Globals.RADIUS );
+            _gridManagerNode.HighLightExpandedBuildableTiles( _hoveredGridCell.Value, _toPlaceBuildingResource.BuildableRadius );
         }
        
-//        GD.Print( gridPosition );
     }
 
     private void ConnectSignals() 
     {
-        _placeTowerButtonNode.Pressed += OnTowerButtonPressed;
-        _placeVillageButtonNode.Pressed += OnVillageButtonPressed;
+        _placeTowerButtonNode.Pressed += OnPlaceTowerButtonPressed;
+        _placeVillageButtonNode.Pressed += OnPlaceVillageButtonPressed;
     }
 
     public override void _UnhandledInput(InputEvent evt)
@@ -73,26 +75,24 @@ public partial class Main : Node
         {
             return;
         }
-        Node2D building = _toPlaceBuildingScene.Instantiate<Node2D>();
+        Node2D building = _toPlaceBuildingResource.BuildingScene.Instantiate<Node2D>();
         _ySortRootNode.AddChild( building );
         Vector2 gridPosition = _hoveredGridCell.Value;
         building.GlobalPosition = gridPosition * Globals.GRID_SIZE;
-      //  _gridManagerNode.MarkTileAsOccupied( _hoveredGridCell.Value );
-
         _hoveredGridCell = null;
         _gridManagerNode.ClearHighLightedTiles();
     }
 
-    private void OnTowerButtonPressed()
+    private void OnPlaceTowerButtonPressed()
     {
-        _toPlaceBuildingScene = _towerScene;
+        _toPlaceBuildingResource = _towerResource;
         _cursorNode.Visible = true;
         _gridManagerNode.HighLightBuildableTiles();
     }
 
-     private void OnVillageButtonPressed()
+     private void OnPlaceVillageButtonPressed()
     {
-        _toPlaceBuildingScene = _villageScene;
+         _toPlaceBuildingResource = _villageResource;
         _cursorNode.Visible = true;
         _gridManagerNode.HighLightBuildableTiles();
     }

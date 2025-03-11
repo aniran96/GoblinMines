@@ -1,6 +1,6 @@
-using System;
 using GoblinMines.Manager;
 using GoblinMines.Resources.Scripts.Building;
+using GoblinMines.Scripts.UI;
 using Godot;
 
 namespace GoblinMines;
@@ -11,9 +11,9 @@ public partial class Main : Node
     private GridManager _gridManagerNode;
     // node references
     private Sprite2D _cursorNode;
-    private Button _placeTowerButtonNode;
-    private Button _placeVillageButtonNode;
+
     private Node2D _ySortRootNode;
+    private GameUI _gameUINode;
 
     // scene references
     private BuildingResource _villageResource;
@@ -30,13 +30,12 @@ public partial class Main : Node
 
     public override void _Ready()
     {
+        _gameUINode = GD.Load<GameUI>("GameUI");
         _towerResource = GD.Load<BuildingResource>( "res://Resources/Files/Buildings/tower.tres" );
         _villageResource = GD.Load<BuildingResource>( "res://Resources/Files/Buildings/village.tres" );  
         _ySortRootNode = GetNode<Node2D>("YSortRoot");
         _gridManagerNode = GetNode<GridManager>("GridManager");
         _cursorNode = GetNode<Sprite2D>("Cursor");
-        _placeTowerButtonNode = GetNode<Button>("PlaceTowerButton");
-        _placeVillageButtonNode = GetNode<Button>("PlaceVillageButton");
         ConnectSignals();
         _cursorNode.Visible = false;
     
@@ -59,8 +58,8 @@ public partial class Main : Node
 
     private void ConnectSignals() 
     {
-        _placeTowerButtonNode.Pressed += OnPlaceTowerButtonPressed;
-        _placeVillageButtonNode.Pressed += OnPlaceVillageButtonPressed;
+        _gameUINode.PlaceTowerButtonPressed += OnPlaceTowerButtonPressed;
+        _gameUINode.PlaceVillageButtonPressed += OnPlaceVillageButtonPressed;
         _gridManagerNode.ResourceTilesUpdated += OnResourceTilesUpdated;
     }
 

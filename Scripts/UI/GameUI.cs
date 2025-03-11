@@ -30,6 +30,7 @@ public partial class GameUI : MarginContainer
 		foreach ( var buildingResource in _buildingResources ) 
 		{
 			var buildingButton = new Button();
+			buildingButton.Text = "Place Building";
 		}
 	}
 

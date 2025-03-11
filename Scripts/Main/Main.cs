@@ -30,12 +30,7 @@ public partial class Main : Node
 
     public override void _Ready()
     {
-        _gameUINode = GD.Load<GameUI>("GameUI");
-        _towerResource = GD.Load<BuildingResource>( "res://Resources/Files/Buildings/tower.tres" );
-        _villageResource = GD.Load<BuildingResource>( "res://Resources/Files/Buildings/village.tres" );  
-        _ySortRootNode = GetNode<Node2D>("YSortRoot");
-        _gridManagerNode = GetNode<GridManager>("GridManager");
-        _cursorNode = GetNode<Sprite2D>("Cursor");
+        InitialiseVariables();
         ConnectSignals();
         _cursorNode.Visible = false;
     
@@ -61,6 +56,16 @@ public partial class Main : Node
         _gameUINode.PlaceTowerButtonPressed += OnPlaceTowerButtonPressed;
         _gameUINode.PlaceVillageButtonPressed += OnPlaceVillageButtonPressed;
         _gridManagerNode.ResourceTilesUpdated += OnResourceTilesUpdated;
+    }
+
+    private void InitialiseVariables() 
+    {
+        _gameUINode = GD.Load<GameUI>("GameUI");
+        _towerResource = GD.Load<BuildingResource>( "res://Resources/Files/Buildings/tower.tres" );
+        _villageResource = GD.Load<BuildingResource>( "res://Resources/Files/Buildings/village.tres" );  
+        _ySortRootNode = GetNode<Node2D>("YSortRoot");
+        _gridManagerNode = GetNode<GridManager>("GridManager");
+        _cursorNode = GetNode<Sprite2D>("Cursor");
     }
 
     public override void _UnhandledInput(InputEvent evt)

@@ -1,3 +1,4 @@
+using GoblinMines.Resources.Scripts.Building;
 using Godot;
 
 namespace GoblinMines.Scripts.UI;
@@ -10,22 +11,27 @@ public partial class GameUI : MarginContainer
 	[Signal]
 	public delegate void PlaceVillageButtonPressedEventHandler();
 
-	// node references
-	private Button _placeTowerButtonNode;
-	private Button _placeVillageButtonNode;
+	// exported resources
+	[Export] private BuildingResource[] _buildingResources;
 
     public override void _Ready()
     {
-        _placeTowerButtonNode = GetNode<Button>("%PlaceTowerButton");
-		_placeVillageButtonNode = GetNode<Button>("%PlaceVillageButton");
+        
 		ConnectSignals();
     }
 
     private void ConnectSignals()
     {
-		_placeTowerButtonNode.Pressed += OnPlaceTowerButtonPressed;
-		_placeVillageButtonNode.Pressed += OnPlaceVillageButtonPressed;
+
     }
+
+	private void CreateBuildingButtons() 
+	{
+		foreach ( var buildingResource in _buildingResources ) 
+		{
+			var buildingButton = new Button();
+		}
+	}
 
 	private void OnPlaceTowerButtonPressed() 
 	{

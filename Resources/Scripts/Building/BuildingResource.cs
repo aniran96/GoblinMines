@@ -5,6 +5,8 @@ namespace GoblinMines.Resources.Scripts.Building;
 [ GlobalClass ]
 public partial class BuildingResource : Resource
 {
+	[Export]
+	public string displayName { get; private set; }
 	[ Export ]
 	public int BuildableRadius { get; private set; }
 	[ Export ]

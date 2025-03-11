@@ -1,3 +1,4 @@
+using System;
 using GoblinMines.Manager;
 using GoblinMines.Resources.Scripts.Building;
 using GoblinMines.Scripts.UI;
@@ -13,20 +14,15 @@ public partial class Main : Node
     private Sprite2D _cursorNode;
 
     private Node2D _ySortRootNode;
-    private GameUI _gameUINode;
-
-    // scene references
-    private BuildingResource _villageResource;
-                        
+    private GameUI _gameUINode;                       
     
     // resources
-    private BuildingResource _towerResource;
     private BuildingResource _toPlaceBuildingResource;
 
 
 
     // variables
-    private Vector2I? _hoveredGridCell;               // to denote the active cell over which mouse is being hovered
+    private Vector2I? _hoveredGridCell;               
 
     public override void _Ready()
     {
@@ -53,16 +49,13 @@ public partial class Main : Node
 
     private void ConnectSignals() 
     {
-        _gameUINode.PlaceTowerButtonPressed += OnPlaceTowerButtonPressed;
-        _gameUINode.PlaceVillageButtonPressed += OnPlaceVillageButtonPressed;
+        _gameUINode.BuildingResourceSelected += OnBuildingResourceSelected;
         _gridManagerNode.ResourceTilesUpdated += OnResourceTilesUpdated;
     }
 
     private void InitialiseVariables() 
     {
-        _gameUINode = GD.Load<GameUI>("GameUI");
-        _towerResource = GD.Load<BuildingResource>( "res://Resources/Files/Buildings/tower.tres" );
-        _villageResource = GD.Load<BuildingResource>( "res://Resources/Files/Buildings/village.tres" );  
+        _gameUINode = GetNode<GameUI>("GameUI");
         _ySortRootNode = GetNode<Node2D>("YSortRoot");
         _gridManagerNode = GetNode<GridManager>("GridManager");
         _cursorNode = GetNode<Sprite2D>("Cursor");
@@ -91,17 +84,10 @@ public partial class Main : Node
         _gridManagerNode.ClearHighLightedTiles();
     }
 
-    private void OnPlaceTowerButtonPressed()
+    private void OnBuildingResourceSelected(BuildingResource buildingResource)
     {
-        _toPlaceBuildingResource = _towerResource;
-        _cursorNode.Visible = true;
-        _gridManagerNode.HighLightBuildableTiles();
-    }
-
-     private void OnPlaceVillageButtonPressed()
-    {
-         _toPlaceBuildingResource = _villageResource;
-        _cursorNode.Visible = true;
+        _toPlaceBuildingResource = buildingResource;
+         _cursorNode.Visible = true;
         _gridManagerNode.HighLightBuildableTiles();
     }
 

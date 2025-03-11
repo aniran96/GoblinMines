@@ -8,5 +8,6 @@ script = ExtResource("1_uwyjy")
 displayName = "Village"
 BuildableRadius = 0
 ResourceRadius = 3
+ResourceCost = 2
 BuildingScene = ExtResource("1_mflco")
 metadata/_custom_type_script = "uid://cni4i46p5mi88"

@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using GoblinMines.Scripts.Components;
 using System.Linq;
 using GoblinMines.AutoLoads.Scripts;
-using System.ComponentModel.DataAnnotations;
 using System;
 
 
-namespace GoblinMines.Manager;
+namespace GoblinMines.Scripts.Manager;
 
 public partial class GridManager : Node
 {

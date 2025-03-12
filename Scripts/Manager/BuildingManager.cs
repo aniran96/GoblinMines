@@ -6,7 +6,7 @@ namespace GoblinMines.Scripts.Manager;
 
 public partial class BuildingManager : Node
 {
-	    // resources
+	// resources
     private BuildingResource _toPlaceBuildingResource;
 
 	// node references
@@ -16,18 +16,19 @@ public partial class BuildingManager : Node
 	private GameUI _gameUINode;
 	[Export]
 	private Node2D _ySortRootNode;
+
+	// scene references
 	[Export]
-	private Sprite2D _cursorNode;
+	private PackedScene _buildingGhostScene;
 	
 	
 	//variables
 	private int _currentResourceCount;
 	private int _startingResourceCount = 4;
 	private int _currentlyUsedResourceCount;
-
 	private int AvailableResourceCount => _startingResourceCount + _currentResourceCount - _currentlyUsedResourceCount;
-
-	private Vector2I? _hoveredGridCell;      
+	private Vector2I? _hoveredGridCell;     
+	private Node2D _buildingGhost; 
 	
 	public override void _Ready()
 	{
@@ -35,10 +36,11 @@ public partial class BuildingManager : Node
 	}
 	public override void _Process(double delta)
     {
+		if (!IsInstanceValid(_buildingGhost)) {return ;}
         Vector2I gridPosition = _gridManagerNode.GetMouseGridCellPosition();        
-        _cursorNode.GlobalPosition = gridPosition * Globals.GRID_SIZE;
+        _buildingGhost.GlobalPosition = gridPosition * Globals.GRID_SIZE;
 
-        if ( _toPlaceBuildingResource != null &&_cursorNode.Visible && ( !_hoveredGridCell.HasValue || _hoveredGridCell.Value != gridPosition ) ) 
+        if ( _toPlaceBuildingResource != null && ( !_hoveredGridCell.HasValue || _hoveredGridCell.Value != gridPosition ) ) 
         {
             _hoveredGridCell = gridPosition;
             _gridManagerNode.ClearHighLightedTiles();
@@ -63,7 +65,7 @@ public partial class BuildingManager : Node
 			AvailableResourceCount >= _toPlaceBuildingResource.ResourceCost ) 
         {
             PlaceBuildingAtHoveredCellPosition();
-            _cursorNode.Visible = false;
+            
         }
     }
 
@@ -81,7 +83,7 @@ public partial class BuildingManager : Node
         _gridManagerNode.ClearHighLightedTiles();
 
 		_currentlyUsedResourceCount += _toPlaceBuildingResource.ResourceCost;
-		GD.Print(AvailableResourceCount);
+		_buildingGhost.QueueFree();
     }
 
 
@@ -92,8 +94,13 @@ public partial class BuildingManager : Node
 
 	 private void OnBuildingResourceSelected(BuildingResource buildingResource)
     {
+		if ( IsInstanceValid(_buildingGhost) ) 
+		{
+			_buildingGhost.QueueFree();
+		}
+		_buildingGhost = _buildingGhostScene.Instantiate<Node2D>();
+		_ySortRootNode.AddChild(_buildingGhost);
         _toPlaceBuildingResource = buildingResource;
-         _cursorNode.Visible = true;
         _gridManagerNode.HighLightBuildableTiles();
     }
 }

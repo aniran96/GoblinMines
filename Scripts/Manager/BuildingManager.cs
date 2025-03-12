@@ -99,7 +99,9 @@ public partial class BuildingManager : Node
 			_buildingGhost.QueueFree();
 		}
 		_buildingGhost = _buildingGhostScene.Instantiate<Node2D>();
-		_ySortRootNode.AddChild(_buildingGhost);
+		_ySortRootNode.AddChild( _buildingGhost );
+		var buildingSprite = buildingResource.SpriteScene.Instantiate<Sprite2D>();
+		_buildingGhost.AddChild( buildingSprite );
         _toPlaceBuildingResource = buildingResource;
         _gridManagerNode.HighLightBuildableTiles();
     }

@@ -140,6 +140,11 @@ public partial class BuildingManager : Node
 								.FirstOrDefault( ( buildingComponent ) => buildingComponent.GetGridCellPosition() == _hoveredGridCell );
 		
 		if ( buildingComponent == null ) { return; } 
+		else 
+		{
+			_currentlyUsedResourceCount -= buildingComponent.BuildingResource.ResourceCost;
+			buildingComponent.Destroy();
+		}
 	}
 
 	private void ClearBuildingGhost()

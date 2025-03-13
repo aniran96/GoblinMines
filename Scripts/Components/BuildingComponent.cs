@@ -33,4 +33,9 @@ public partial class BuildingComponent : Node2D
 		Vector2I gridPositionInt = new Vector2I( (int)gridPosition.X, (int)gridPosition.Y );
         return gridPositionInt;
 	}
+
+	public void Destroy() 
+	{
+		Owner.QueueFree();
+	}
 }

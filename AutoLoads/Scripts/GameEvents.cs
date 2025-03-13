@@ -8,6 +8,8 @@ public partial class GameEvents : Node
 	// signals
 	[ Signal ]
 	public delegate void BuildingPlacedEventHandler( BuildingComponent buildingComponent );
+	[ Signal ]
+	public delegate void BuildingDestroyedEventHandler( BuildingComponent buildingComponent );
 
 	// class variable
 	public static GameEvents Instance { get; private set; }
@@ -23,6 +25,11 @@ public partial class GameEvents : Node
 		public static void EmitBuildingPlaced( BuildingComponent buildingComponent ) 
 		{
 			Instance.EmitSignal( SignalName.BuildingPlaced, buildingComponent );
+		}
+
+		public static void EmitBuildingDestroyed( BuildingComponent buildingComponent ) 
+		{
+			Instance.EmitSignal( SignalName.BuildingDestroyed, buildingComponent );
 		}
 
 }

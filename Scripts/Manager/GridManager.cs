@@ -141,13 +141,17 @@ public partial class GridManager : Node
 	{
 		_occupiedTiles.Clear();
 		_validBuildableTiles.Clear();
+		_collectedResourceTiles.Clear();
 		var buildingComponents = GetTree().GetNodesInGroup( nameof(BuildingComponent) ).Cast<BuildingComponent>()
 		.Where( ( buildingComponent ) => buildingComponent != excludeBuildingComponent );
 
 		foreach( var buildingComponent in buildingComponents ) 
 		{
 			UpdateValidBuildableTiles( buildingComponent );
+			UpdateCollectedResourceTiles( buildingComponent );
+
 		}
+		EmitSignal( SignalName.ResourceTilesUpdated, _collectedResourceTiles.Count );
 	}
 
 	private void UpdateCollectedResourceTiles( BuildingComponent buildingComponent ) 

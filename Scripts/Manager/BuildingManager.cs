@@ -138,6 +138,8 @@ public partial class BuildingManager : Node
 	{
 		var buildingComponent = GetTree().GetNodesInGroup( nameof( BuildingComponent ) ).Cast<BuildingComponent>()
 								.FirstOrDefault( ( buildingComponent ) => buildingComponent.GetGridCellPosition() == _hoveredGridCell );
+		
+		if ( buildingComponent == null ) { return; } 
 	}
 
 	private void ClearBuildingGhost()

@@ -10,9 +10,6 @@ namespace GoblinMines.Scripts.Manager;
 
 public partial class GridManager : Node
 {
-	// constants
-	public const string IS_BUILDABLE = "is_buildable";
-	public const string IS_WOOD = "is_wood";
 
 	// signals
 	[ Signal ]
@@ -174,7 +171,7 @@ public partial class GridManager : Node
 	{
 		return GetTilesInRadius( rootCell, radius, (tilePosition) => 
 		{
-			return TileHasCustomData( tilePosition, IS_BUILDABLE );
+			return TileHasCustomData( tilePosition, Globals.IS_BUILDABLE );
 		} );
 	}
 
@@ -182,7 +179,7 @@ public partial class GridManager : Node
 	{
 		return GetTilesInRadius( rootCell, radius, (tilePosition) => 
 		{
-			return TileHasCustomData( tilePosition, IS_WOOD );
+			return TileHasCustomData( tilePosition, Globals.IS_WOOD );
 		} );
 	}
 

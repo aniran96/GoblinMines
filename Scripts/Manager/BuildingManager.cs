@@ -1,3 +1,4 @@
+using GoblinMines.AutoLoads.Scripts;
 using GoblinMines.Resources.Scripts.Building;
 using GoblinMines.Scripts.Building.Sprites;
 using GoblinMines.Scripts.UI;
@@ -21,6 +22,13 @@ public partial class BuildingManager : Node
 	// scene references
 	[Export]
 	private PackedScene _buildingGhostScene;
+
+	//enums
+	private enum State 
+	{
+		Normal,
+		PlaceBuilding
+	}
 	
 	
 	//variables
@@ -30,6 +38,7 @@ public partial class BuildingManager : Node
 	private int AvailableResourceCount => _startingResourceCount + _currentResourceCount - _currentlyUsedResourceCount;
 	private Vector2I? _hoveredGridCell;     
 	private BuildingGhost _buildingGhost; 
+	private State _currentState;
 	
 	public override void _Ready()
 	{
@@ -74,21 +83,41 @@ public partial class BuildingManager : Node
 
 	public override void _UnhandledInput(InputEvent evt)
     {
-		if ( evt.IsActionPressed( Globals.ACTION_CANCEL ) ) 
+		switch( _currentState ) 
 		{
-			ClearBuildingGhost();
-		}
-		else if ( 
-			_hoveredGridCell.HasValue && 
-			_toPlaceBuildingResource != null &&
-		    evt.IsActionPressed( Globals.ACTION_LEFT_CLICK ) && 
-			IsBuildingPlaceableAtTile( _hoveredGridCell.Value )
-			)
-			
-        {
-            PlaceBuildingAtHoveredCellPosition();
+			case State.Normal : 
+			{
+				if ( evt.IsActionPressed( Globals.ACTION_RIGHT_CLICK ) ) 
+				{
+					DestroyBuildingAtHoveredCellPosition();
+				}
+				break;
+			}
+			case State.PlaceBuilding : 
+			{
+				if ( evt.IsActionPressed( Globals.ACTION_CANCEL ) ) 
+				{
+					ClearBuildingGhost();
+				}
+				else if ( 
+					_hoveredGridCell.HasValue && 
+					_toPlaceBuildingResource != null &&
+		    		evt.IsActionPressed( Globals.ACTION_LEFT_CLICK ) && 
+					IsBuildingPlaceableAtTile( _hoveredGridCell.Value )
+						)
+        				{
+            				PlaceBuildingAtHoveredCellPosition();
             
-        }
+        				}
+				break;
+			}
+			
+			default : 
+			{
+				break;
+			}
+		}
+		
     }
 
     private void PlaceBuildingAtHoveredCellPosition() 
@@ -104,6 +133,11 @@ public partial class BuildingManager : Node
 		_currentlyUsedResourceCount += _toPlaceBuildingResource.ResourceCost;
 		ClearBuildingGhost();
     }
+
+	private void DestroyBuildingAtHoveredCellPosition() 
+	{
+
+	}
 
 	private void ClearBuildingGhost() 
 	{

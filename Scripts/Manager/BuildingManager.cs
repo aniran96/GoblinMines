@@ -22,14 +22,6 @@ public partial class BuildingManager : Node
 	// scene references
 	[Export]
 	private PackedScene _buildingGhostScene;
-
-	//enums
-	private enum State 
-	{
-		Normal,
-		PlaceBuilding
-	}
-	
 	
 	//variables
 	private int _currentResourceCount;
@@ -47,13 +39,25 @@ public partial class BuildingManager : Node
 	public override void _Process(double delta)
     {
         Vector2I gridPosition = _gridManagerNode.GetMouseGridCellPosition();        
-        _buildingGhost.GlobalPosition = gridPosition * Globals.GRID_SIZE;
 
         if ( _hoveredGridCell != gridPosition  ) 
         {
             _hoveredGridCell = gridPosition;
 			UpdateHoveredGridCell();
-        }       
+        }     
+
+		switch( _currentState ) 
+		{
+			case State.Normal : 
+			{
+				break;
+			}
+			case State.PlaceBuilding : 
+			{
+        		_buildingGhost.GlobalPosition = gridPosition * Globals.GRID_SIZE;
+				break;
+			}
+		}  
     }
 
 	private void UpdateGridDisplay() 
@@ -95,7 +99,7 @@ public partial class BuildingManager : Node
 			{
 				if ( evt.IsActionPressed( Globals.ACTION_CANCEL ) ) 
 				{
-					ClearBuildingGhost();
+					ChangeState( State.Normal );
 				}
 				else if (  
 					_toPlaceBuildingResource != null &&
@@ -125,7 +129,7 @@ public partial class BuildingManager : Node
         Vector2 gridPosition = _hoveredGridCell;
         building.GlobalPosition = gridPosition * Globals.GRID_SIZE;
 		_currentlyUsedResourceCount += _toPlaceBuildingResource.ResourceCost;
-		ClearBuildingGhost();
+		ChangeState( State.Normal );
     }
 
 	private void DestroyBuildingAtHoveredCellPosition() 
@@ -169,20 +173,47 @@ public partial class BuildingManager : Node
 		}
 	}
 
+	private void ChangeState( State toState ) 
+	{
+		switch( _currentState ) 
+		{
+			case State.Normal :
+			{
+				break;
+			}
+			case State.PlaceBuilding : 
+			{
+				ClearBuildingGhost();
+				_toPlaceBuildingResource = null;
+				break;
+			}
+		}
 
-	private void OnResourceTilesUpdated(int resourceCount) 
+		_currentState = toState;
+
+		switch( _currentState ) 
+		{
+			case State.Normal : 
+			{
+				break;
+			}
+			case State.PlaceBuilding : 
+			{
+				_buildingGhost = _buildingGhostScene.Instantiate<BuildingGhost>();
+				_ySortRootNode.AddChild( _buildingGhost );
+				break;
+			}
+		}
+	}
+
+	private void OnResourceTilesUpdated( int resourceCount ) 
 	{
 		_currentResourceCount = resourceCount;
 	}
 
-	 private void OnBuildingResourceSelected(BuildingResource buildingResource)
+	 private void OnBuildingResourceSelected( BuildingResource buildingResource )
     {
-		if ( IsInstanceValid(_buildingGhost) ) 
-		{
-			_buildingGhost.QueueFree();
-		}
-		_buildingGhost = _buildingGhostScene.Instantiate<BuildingGhost>();
-		_ySortRootNode.AddChild( _buildingGhost );
+		ChangeState( State.PlaceBuilding );
 		var buildingSprite = buildingResource.SpriteScene.Instantiate<Sprite2D>();
 		_buildingGhost.AddChild( buildingSprite );
         _toPlaceBuildingResource = buildingResource;

@@ -36,7 +36,7 @@ public partial class BuildingManager : Node
 	private int _startingResourceCount = 4;
 	private int _currentlyUsedResourceCount;
 	private int AvailableResourceCount => _startingResourceCount + _currentResourceCount - _currentlyUsedResourceCount;
-	private Vector2I? _hoveredGridCell;     
+	private Vector2I _hoveredGridCell;     
 	private BuildingGhost _buildingGhost; 
 	private State _currentState;
 	
@@ -46,26 +46,24 @@ public partial class BuildingManager : Node
 	}
 	public override void _Process(double delta)
     {
-		if (!IsInstanceValid(_buildingGhost)) {return ;}
         Vector2I gridPosition = _gridManagerNode.GetMouseGridCellPosition();        
         _buildingGhost.GlobalPosition = gridPosition * Globals.GRID_SIZE;
 
-        if ( _toPlaceBuildingResource != null && ( !_hoveredGridCell.HasValue || _hoveredGridCell.Value != gridPosition ) ) 
+        if ( _hoveredGridCell != gridPosition  ) 
         {
             _hoveredGridCell = gridPosition;
-			UpdateGridDisplay();
+			UpdateHoveredGridCell();
         }       
     }
 
 	private void UpdateGridDisplay() 
 	{
-		if ( _hoveredGridCell == null ) { return; }
 		_gridManagerNode.ClearHighLightedTiles();
 		_gridManagerNode.HighLightBuildableTiles();
-		if ( IsBuildingPlaceableAtTile( _hoveredGridCell.Value ) ) 
+		if ( IsBuildingPlaceableAtTile( _hoveredGridCell ) ) 
 		{
-			_gridManagerNode.HighLightExpandedBuildableTiles( _hoveredGridCell.Value, _toPlaceBuildingResource.BuildableRadius );
-			_gridManagerNode.HighLightResourceTiles( _hoveredGridCell.Value, _toPlaceBuildingResource.ResourceRadius );
+			_gridManagerNode.HighLightExpandedBuildableTiles( _hoveredGridCell, _toPlaceBuildingResource.BuildableRadius );
+			_gridManagerNode.HighLightResourceTiles( _hoveredGridCell, _toPlaceBuildingResource.ResourceRadius );
 			_buildingGhost.SetValid();
 		}
 		else 
@@ -99,11 +97,10 @@ public partial class BuildingManager : Node
 				{
 					ClearBuildingGhost();
 				}
-				else if ( 
-					_hoveredGridCell.HasValue && 
+				else if (  
 					_toPlaceBuildingResource != null &&
 		    		evt.IsActionPressed( Globals.ACTION_LEFT_CLICK ) && 
-					IsBuildingPlaceableAtTile( _hoveredGridCell.Value )
+					IsBuildingPlaceableAtTile( _hoveredGridCell )
 						)
         				{
             				PlaceBuildingAtHoveredCellPosition();
@@ -122,13 +119,10 @@ public partial class BuildingManager : Node
 
     private void PlaceBuildingAtHoveredCellPosition() 
     {
-        if ( !_hoveredGridCell.HasValue ) 
-        {
-            return;
-        }
+        
         Node2D building = _toPlaceBuildingResource.BuildingScene.Instantiate<Node2D>();
         _ySortRootNode.AddChild( building );
-        Vector2 gridPosition = _hoveredGridCell.Value;
+        Vector2 gridPosition = _hoveredGridCell;
         building.GlobalPosition = gridPosition * Globals.GRID_SIZE;
 		_currentlyUsedResourceCount += _toPlaceBuildingResource.ResourceCost;
 		ClearBuildingGhost();
@@ -141,7 +135,6 @@ public partial class BuildingManager : Node
 
 	private void ClearBuildingGhost() 
 	{
-		_hoveredGridCell = null;
 		_gridManagerNode.ClearHighLightedTiles();
 		if ( IsInstanceValid( _buildingGhost ) )
 		{
@@ -154,6 +147,26 @@ public partial class BuildingManager : Node
 	{
 		return _gridManagerNode.IsTilePositionBuildable( tilePosition ) &&
 			AvailableResourceCount >= _toPlaceBuildingResource.ResourceCost  ;
+	}
+
+	private void UpdateHoveredGridCell() 
+	{
+		switch( _currentState ) 
+		{
+			case State.Normal : 
+			{
+				break;
+			}
+			case State.PlaceBuilding : 
+			{
+				UpdateGridDisplay();
+				break;
+			}
+			default : 
+			{
+				break;
+			}
+		}
 	}
 
 

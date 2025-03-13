@@ -78,7 +78,7 @@ public partial class GridManager : Node
 	public void HighLightExpandedBuildableTiles( Vector2I rootCell, int radius ) 
 	{
 		var validTiles = GetValidTilesInRadius( rootCell, radius ).ToHashSet();
-		var expandedTiles = validTiles.Except( _validBuildableTiles ).Except( GetOccupiedTiles() );
+		var expandedTiles = validTiles.Except( _validBuildableTiles ).Except( _occupiedTiles );
 		Vector2I atlasCoordinates = new Vector2I( 1, 0 );
 
 		foreach( var tilePosition in expandedTiles ) 
@@ -139,6 +139,7 @@ public partial class GridManager : Node
 
 	private void RecalculateGrid( BuildingComponent excludeBuildingComponent ) 
 	{
+		_occupiedTiles.Clear();
 		_validBuildableTiles.Clear();
 		var buildingComponents = GetTree().GetNodesInGroup( nameof(BuildingComponent) ).Cast<BuildingComponent>()
 		.Where( ( buildingComponent ) => buildingComponent != excludeBuildingComponent );
@@ -201,12 +202,12 @@ public partial class GridManager : Node
 		} );
 	}
 
-	private IEnumerable<Vector2I> GetOccupiedTiles() 
-	{
-		var buildingComponents = GetTree().GetNodesInGroup( nameof( BuildingComponent ) ).Cast<BuildingComponent>();
-		var occupiedTiles = buildingComponents.Select( x => x.GetGridCellPosition() );
-		return occupiedTiles;
-	}
+	// private IEnumerable<Vector2I> GetOccupiedTiles() 
+	// {
+	// 	var buildingComponents = GetTree().GetNodesInGroup( nameof( BuildingComponent ) ).Cast<BuildingComponent>();
+	// 	var occupiedTiles = buildingComponents.Select( x => x.GetGridCellPosition() );
+	// 	return occupiedTiles;
+	// }
 
 	private void OnBuildingPlaced( BuildingComponent buildingComponent )
     {
